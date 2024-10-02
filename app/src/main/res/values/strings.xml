@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Damage report</string>
+    <string name="pass">Password</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
 </resources>
