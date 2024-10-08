@@ -5,4 +5,21 @@
     <string name="username">Username</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="name">Name</string>
+    <string name="fullsurname">Full surname</string>
+    <string name="email">Email</string>
+    <string name="phone">Number phone</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="password_recovery">Password recovery</string>
+    <string name="send">Send</string>
+    <string name="verification_code">Verification code</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_pass">Confirm password</string>
+    <string name="confirm">Confirm</string>
+    <string name="title_activity_home">Home</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="modify">Modify</string>
+    <string name="logout">Logout</string>
 </resources>
