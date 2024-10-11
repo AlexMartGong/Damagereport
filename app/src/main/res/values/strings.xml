@@ -22,4 +22,8 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="modify">Modify</string>
     <string name="logout">Logout</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">HOME</string>
+    <string name="profile">PROFILE</string>
 </resources>
