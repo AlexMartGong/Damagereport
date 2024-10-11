@@ -9,14 +9,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class Navigation : AppCompatActivity() {
 
     private lateinit var bnv: BottomNavigationView
-    private lateinit var frame: FrameLayout
+    //private lateinit var frame: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
         bnv = findViewById(R.id.bottomNavigationView)
-        frame = findViewById(R.id.fragmentContainer)
+        //frame = findViewById(R.id.fragmentContainer)
 
         // Configurar el listener para el BottomNavigationView
         bnv.setOnItemSelectedListener { menuItem ->
