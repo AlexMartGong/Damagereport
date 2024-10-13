@@ -1,10 +1,13 @@
 package com.example.damagereport
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,6 +23,9 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private lateinit var rvReport: RecyclerView
+    private lateinit var btnAddReport: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,4 +62,23 @@ class HomeFragment : Fragment() {
                 }
             }
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        btnAddReport = view.findViewById(R.id.btnAddReport) // Asegúrate de que el ID sea correcto
+        btnAddReport.setOnClickListener { newReport() }
+    }
+
+    fun clickItem(position: Int) {
+        val intent = Intent(requireContext(), NewReport::class.java)
+        intent.putExtra("position", position)
+        startActivity(intent)
+    }
+
+    private fun newReport() {
+        val intent = Intent(requireContext(), NewReport::class.java)
+        startActivity(intent)
+    }
+
 }
