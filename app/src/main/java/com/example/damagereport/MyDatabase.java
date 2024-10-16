@@ -16,7 +16,7 @@ public class MyDatabase extends SQLiteOpenHelper {
 
     private Context context;
     private static final String DATABASE_NAME = "Damages.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_NAME = "Damages";
     private static final String COLUMN_ID = "id";
@@ -29,6 +29,15 @@ public class MyDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_DAMAGE_STATUS = "damage_status";
     private static final String COLUMN_DAMAGE_PROBABLE_CAUSE = "damage_probable_cause";
     private static final String COLUMN_ID_USER = "id_user";
+
+    private static final String TABLE_NAME_USER = "User";
+    private static final String COLUMN_USER_ID = "id_user";
+    private static final String COLUMN_USERNAME = "username";
+    private static final String COLUMN_USER_NAME = "name";
+    private static final String COLUMN_USER_SURNAME = "surname";
+    private static final String COLUMN_USER_PASSWORD = "user_password";
+    private static final String COLUMN_USER_EMAIL = "user_email";
+    private static final String COLUMN_USER_PHONE = "user_phone";
 
     public MyDatabase(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -49,11 +58,22 @@ public class MyDatabase extends SQLiteOpenHelper {
                 COLUMN_DAMAGE_PROBABLE_CAUSE + " TEXT, " +
                 COLUMN_ID_USER + " INTEGER);";
         db.execSQL(query);
+
+        String userQuery = "CREATE TABLE " + TABLE_NAME_USER +
+                " (" + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_USERNAME + " TEXT, " +
+                COLUMN_USER_NAME + " TEXT, " +
+                COLUMN_USER_SURNAME + " TEXT, " +
+                COLUMN_USER_PASSWORD + " TEXT, " +
+                COLUMN_USER_EMAIL + " TEXT, " +
+                COLUMN_USER_PHONE + " TEXT);";
+        db.execSQL(userQuery);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_USER);
         onCreate(db);
     }
 
@@ -149,6 +169,120 @@ public class MyDatabase extends SQLiteOpenHelper {
             Toast.makeText(context, "Delete Successful", Toast.LENGTH_SHORT).show();
         }
         db.close();
+    }
+
+    public long registerUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_USERNAME, user.getUsername());
+        cv.put(COLUMN_USER_NAME, user.getName());
+        cv.put(COLUMN_USER_SURNAME, user.getSurname());
+        cv.put(COLUMN_USER_PASSWORD, user.getPassword());
+        cv.put(COLUMN_USER_EMAIL, user.getEmail());
+        cv.put(COLUMN_USER_PHONE, user.getPhone());
+
+        long result = db.insert(TABLE_NAME_USER, null, cv);
+        if (result == -1) {
+            Toast.makeText(context, "User Registration Failed", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "User Registered Successfully", Toast.LENGTH_SHORT).show();
+        }
+        db.close();
+        return result;
+    }
+
+    public boolean checkLogin(String username, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] columns = {COLUMN_USER_ID};
+        String selection = COLUMN_USERNAME + "=? AND " + COLUMN_USER_PASSWORD + "=?";
+        String[] selectionArgs = {username, password};
+
+        Cursor cursor = db.query(TABLE_NAME_USER, columns, selection, selectionArgs, null, null, null);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        return count > 0;
+    }
+
+    public User getUser(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        User user = null;
+
+        String[] columns = {COLUMN_USER_ID, COLUMN_USERNAME, COLUMN_USER_NAME, COLUMN_USER_SURNAME,
+                COLUMN_USER_EMAIL, COLUMN_USER_PASSWORD, COLUMN_USER_PHONE};
+        String selection = COLUMN_USERNAME + "=?";
+        String[] selectionArgs = {username};
+
+        Cursor cursor = db.query(TABLE_NAME_USER, columns, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            user = new User(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_SURNAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_EMAIL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_PASSWORD)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_PHONE))
+            );
+        }
+
+        cursor.close();
+        db.close();
+        return user;
+    }
+
+    public boolean isUsernameTaken(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            String query = "SELECT * FROM " + TABLE_NAME_USER + " WHERE " + COLUMN_USERNAME + " = ?";
+            cursor = db.rawQuery(query, new String[]{username});
+            return cursor.getCount() > 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+    }
+
+    public boolean updateUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMN_USER_NAME, user.getName());
+        cv.put(COLUMN_USER_SURNAME, user.getSurname());
+        cv.put(COLUMN_USER_EMAIL, user.getEmail());
+        cv.put(COLUMN_USER_PASSWORD, user.getPassword());
+        cv.put(COLUMN_USER_PHONE, user.getPhone());
+
+        int result = db.update(TABLE_NAME_USER, cv, COLUMN_USERNAME + "=?", new String[]{user.getUsername()});
+        db.close();
+
+        if (result > 0) {
+            Toast.makeText(context, "User Updated Successfully", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            Toast.makeText(context, "User Update Failed", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    public boolean deleteUser(String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_NAME_USER, COLUMN_USERNAME + "=?", new String[]{username});
+        db.close();
+
+        if (result > 0) {
+            Toast.makeText(context, "User Deleted Successfully", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            Toast.makeText(context, "User Deletion Failed", Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
 }
