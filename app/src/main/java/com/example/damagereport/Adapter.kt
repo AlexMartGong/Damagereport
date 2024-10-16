@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 class Adapter (private var homeFragment: HomeFragment)
     : RecyclerView.Adapter<Adapter.ViewHolderConcat>() {
 
-    //Parte interna
     class ViewHolderConcat(item: View) : RecyclerView.ViewHolder(item) {
         var txtTitle: TextView = item.findViewById(R.id.txtTitle)
         var txtDescription: TextView = item.findViewById(R.id.txtDescription)

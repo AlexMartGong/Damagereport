@@ -79,4 +79,6 @@
     <string name="location_of_damage">Location of damage</string>
     <string name="photos_of_the_damage">Photos of the damage</string>
     <string name="damage_report">Damage report</string>
+    <string name="delete_report">Delete</string>
+    <string name="status_report">Status</string>
 </resources>
