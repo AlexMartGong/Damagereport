@@ -1,7 +1,6 @@
 package com.example.damagereport
 
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -9,16 +8,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class Navigation : AppCompatActivity() {
 
     private lateinit var bnv: BottomNavigationView
-    //private lateinit var frame: FrameLayout
+    private lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
-        bnv = findViewById(R.id.bottomNavigationView)
-        //frame = findViewById(R.id.fragmentContainer)
+        username = intent.getStringExtra("USERNAME") ?: ""
 
-        // Configurar el listener para el BottomNavigationView
+        bnv = findViewById(R.id.bottomNavigationView)
+
         bnv.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home -> {
@@ -26,14 +25,18 @@ class Navigation : AppCompatActivity() {
                     true
                 }
                 R.id.profile -> {
-                    loadFragment(ProfileFragment())
+                    val profileFragment = ProfileFragment().apply {
+                        arguments = Bundle().apply {
+                            putString("USERNAME", username)
+                        }
+                    }
+                    loadFragment(profileFragment)
                     true
                 }
                 else -> false
             }
         }
 
-        // Cargar el Fragment inicial
         loadFragment(HomeFragment())
     }
 
